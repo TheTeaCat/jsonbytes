@@ -48,35 +48,55 @@ As you can see in the example run below, when benchmarked on validating axios' p
 ```
 goos: darwin
 goarch: arm64
-pkg: jsonbytes
+pkg: github.com/theteacat/jsonbytes
 cpu: Apple M1 Pro
-BenchmarkIsJsonLongString10KiB-8                                                           90062             13198 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonLongNumber10KiB-8                                                          123435              9733 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonLongName10KiB-8                                                            141166              8450 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonLongWhitespace10KiB-8                                                      134388              8929 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonLongArray10KiB-8                                                            24696             48613 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonLongObject10KiB-8                                                           73126             16373 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonManyArrays10KiB-8                                                           38200             31440 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonManyObjects10KiB-8                                                          39963             30163 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonManyTrues10KiB-8                                                            45212             26558 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonManyFalses10KiB-8                                                           55846             21438 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonManyNulls10KiB-8                                                            45046             26610 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesLongString10KiB-8                                                  90817             13186 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesLongNumber10KiB-8                                                 123235              9724 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesLongName10KiB-8                                                    90542             13223 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesLongWhitespace10KiB-8                                             132949              8967 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesLongArray10KiB-8                                                   20362             58941 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesLongObject10KiB-8                                                  48667             24643 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesManyArrays10KiB-8                                                  29868             40145 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesManyObjects10KiB-8                                                 29346             40874 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesManyTrues10KiB-8                                                   38766             30999 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesManyFalses10KiB-8                                                  48090             25010 ns/op               0 B/op          0 allocs/op
-BenchmarkRedactAllValuesManyNulls10KiB-8                                                   38714             30960 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonSamplePackageLockAxios-8                                                      511           2348059 ns/op               0 B/op          0 allocs/op
-BenchmarkIsJsonSamplePackageLockAxiosReferenceImplementation-8                                97          11796296 ns/op         5257267 B/op      97409 allocs/op
-BenchmarkRedactAllValuesSamplePackageLockAxios-8                                             424           2817082 ns/op              20 B/op          0 allocs/op
-BenchmarkRedactAllValuesSamplePackageLockAxiosReferenceImplementation-8                       57          19392148 ns/op         8894840 B/op     177199 allocs/op
-BenchmarkRedactAllValuesSamplePackageLockAxiosReferenceImplementationPremarshalled-8         840           1418088 ns/op             634 B/op         26 allocs/op
+BenchmarkIsJson/LongString/IsJson-8                                                        89767             13210 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/LongString/EncodingJson-8                                                  28606             42841 ns/op           10416 B/op          4 allocs/op
+BenchmarkIsJson/LongNumber/IsJson-8                                                       122943              9699 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/LongName/IsJson-8                                                         142365              8434 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/LongName/EncodingJson-8                                                    28135             42540 ns/op           10752 B/op          6 allocs/op
+BenchmarkIsJson/LongWhitespace/IsJson-8                                                   134277              8928 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/LongWhitespace/EncodingJson-8                                              25760             46573 ns/op             176 B/op          3 allocs/op
+BenchmarkIsJson/longArray/IsJson-8                                                         24716             48505 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/longArray/EncodingJson-8                                                    4634            250700 ns/op          281131 B/op       5138 allocs/op
+BenchmarkIsJson/LongObject/IsJson-8                                                        56740             21179 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/LongObject/EncodingJson-8                                                   6640            172589 ns/op          171248 B/op       1287 allocs/op
+BenchmarkIsJson/ManyArrays/IsJson-8                                                        38317             31371 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/ManyArrays/EncodingJson-8                                                   5436            207378 ns/op          240193 B/op       3432 allocs/op
+BenchmarkIsJson/ManyObjects/IsJson-8                                                       37048             32436 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/ManyObjects/EncodingJson-8                                                  3840            296951 ns/op          563246 B/op       4406 allocs/op
+BenchmarkIsJson/ManyTrues/IsJson-8                                                         45331             26472 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/ManyTrues/EncodingJson-8                                                   18610             64220 ns/op          100920 B/op         17 allocs/op
+BenchmarkIsJson/ManyFalses/IsJson-8                                                        55848             21343 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/ManyFalses/EncodingJson-8                                                  20574             58339 ns/op          100920 B/op         17 allocs/op
+BenchmarkIsJson/ManyNulls/IsJson-8                                                         45309             26479 ns/op               0 B/op          0 allocs/op
+BenchmarkIsJson/ManyNulls/EncodingJson-8                                                   18403             66726 ns/op          100920 B/op         17 allocs/op
+BenchmarkIsJson/PackageLockAxios/IsJson-8                                                    511           2331683 ns/op              16 B/op          0 allocs/op
+BenchmarkIsJson/PackageLockAxios/EncodingJson-8                                               97          11834472 ns/op         5255954 B/op      97406 allocs/op
+BenchmarkRedactAllValues/LongString/RedactAllValues-8                                      91222             13151 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/LongString/EncodingJson-8                                         28405             42304 ns/op           10440 B/op          5 allocs/op
+BenchmarkRedactAllValues/LongNumber/RedactAllValues-8                                     123540              9704 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/LongName/RedactAllValues-8                                        91056             13176 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/LongName/EncodingJson-8                                           22549             52959 ns/op           21237 B/op         10 allocs/op
+BenchmarkRedactAllValues/LongWhitespace/RedactAllValues-8                                 133742              8929 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/LongWhitespace/EncodingJson-8                                     25627             47297 ns/op             180 B/op          4 allocs/op
+BenchmarkRedactAllValues/longArray/RedactAllValues-8                                       20440             58710 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/longArray/EncodingJson-8                                           2785            423017 ns/op          292788 B/op       5140 allocs/op
+BenchmarkRedactAllValues/LongObject/RedactAllValues-8                                      37698             30898 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/LongObject/EncodingJson-8                                          2361            497345 ns/op          280723 B/op       3813 allocs/op
+BenchmarkRedactAllValues/ManyArrays/RedactAllValues-8                                      30164             39730 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/ManyArrays/EncodingJson-8                                          2931            395539 ns/op          334008 B/op       6847 allocs/op
+BenchmarkRedactAllValues/ManyObjects/RedactAllValues-8                                     28626             41896 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/ManyObjects/EncodingJson-8                                         1812            645269 ns/op          694352 B/op       8798 allocs/op
+BenchmarkRedactAllValues/ManyTrues/RedactAllValues-8                                       38942             30758 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/ManyTrues/EncodingJson-8                                           9067            123876 ns/op          112605 B/op         19 allocs/op
+BenchmarkRedactAllValues/ManyFalses/RedactAllValues-8                                      48184             24850 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/ManyFalses/EncodingJson-8                                         10000            108082 ns/op          111229 B/op         19 allocs/op
+BenchmarkRedactAllValues/ManyNulls/RedactAllValues-8                                       38722             30701 ns/op               0 B/op          0 allocs/op
+BenchmarkRedactAllValues/ManyNulls/EncodingJson-8                                          13690             87782 ns/op          112621 B/op         19 allocs/op
+BenchmarkRedactAllValues/PackageLockAxios/RedactAllValues-8                                  428           2785106 ns/op              20 B/op          0 allocs/op
+BenchmarkRedactAllValues/PackageLockAxios/EncodingJson-8                                      58          19400187 ns/op         9068179 B/op     177202 allocs/op
+BenchmarkRedactAllValuesSamplePackageLockAxiosReferenceImplementationPremarshalled-8         840           1445712 ns/op             631 B/op         26 allocs/op
 PASS
-ok      jsonbytes       116.554s
+ok      github.com/theteacat/jsonbytes  158.470s
 ```

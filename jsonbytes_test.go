@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
-
-// Tests
 
 func TestIsJson(t *testing.T) {
 	testCases := []string{
@@ -252,229 +251,194 @@ func TestRedactAllValuesInvalidJsons(t *testing.T) {
 	}
 }
 
-// Sample values for benchmarks
-
 var longString []byte = []byte("\"" + strings.Repeat("a", 10240-2) + "\"")         // Precisely 10KiB
 var longNumber []byte = []byte(strings.Repeat("1", 10240))                         // Precisely 10KiB
 var longName []byte = []byte("{\"f" + strings.Repeat("o", 10240-3-5) + "\":\"\"}") // Precisely 10KiB
 var longWhitespace []byte = []byte(strings.Repeat(" ", 10240-1) + "1")             // Precisely 1KiB
-var longArray string
-var longObject string
-var manyArrays string
-var manyObjects string
-var manyTrues string
-var manyFalses string
-var manyNulls string
+var longArray []byte
+var longObject []byte
+var manyArrays []byte
+var manyObjects []byte
+var manyTrues []byte
+var manyFalses []byte
+var manyNulls []byte
 var packageLockAxios []byte
 
+type testJsonCase struct {
+	name     string
+	testJson *[]byte
+}
+
+var testJsonCases []testJsonCase = []testJsonCase{
+	{"LongString", &longString},
+	{"LongNumber", &longNumber},
+	{"LongName", &longName},
+	{"LongWhitespace", &longWhitespace},
+	{"longArray", &longArray},
+	{"LongObject", &longObject},
+	{"ManyArrays", &manyArrays},
+	{"ManyObjects", &manyObjects},
+	{"ManyTrues", &manyTrues},
+	{"ManyFalses", &manyFalses},
+	{"ManyNulls", &manyNulls},
+	{"PackageLockAxios", &packageLockAxios},
+}
+
 func init() {
-	longArray = "["
-	//  5119 repeats of 1 with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
-	for i := 1; i <= 5119; i++ {
-		longArray += "1"
-		if i < 5119 {
-			longArray += ","
-		}
-	}
-	longArray += "]"
-	longObject = "{"
-	// 1261 copies of "i":0 with i 0-1261, ',' separators and enclosing [] gives us a testJson of exactly 10KiB
-	for i := 1; i <= 1261; i++ {
-		longObject += "\"\":0"
-		if i < 1261 {
-			longObject += ","
-		}
-	}
-	longObject += "}"
-	manyArrays = "["
-	//  3413 repeats of 1 with , separators and enclosing [] gives us a testJson of exactly 10KiB
-	for i := 1; i <= 3413; i++ {
-		manyArrays += "[]"
-		if i < 3413 {
-			manyArrays += ","
-		}
-	}
-	manyArrays += "]"
-	manyObjects = "["
-	// 1463 copies of {"":0} with , separators and enclosing [] gives us a testJson of 10242 bytes (~1.0002KiB)
-	for i := 1; i <= 1463; i++ {
-		manyObjects += "{\"\":0}"
-		if i < 1463 {
-			manyObjects += ","
-		}
-	}
-	manyObjects += "]"
-	manyTrues = "["
-	// 2048 repeats of true with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
-	for i := 1; i <= 2048; i++ {
-		manyTrues += "true"
-		if i < 2048 {
-			manyTrues += ","
-		}
-	}
-	manyTrues += "]"
-	manyFalses = "["
-	// 1707 repeats of false with , separators and enclosing [] gives us a testJson of 10243 bytes (~10.003KiB)
-	for i := 1; i <= 1707; i++ {
-		manyFalses += "false"
-		if i < 1707 {
-			manyFalses += ","
-		}
-	}
-	manyFalses += "]"
-	manyNulls = "["
-	// 2048 repeats of null with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
-	for i := 1; i <= 2048; i++ {
-		manyNulls += "null"
-		if i < 2048 {
-			manyNulls += ","
-		}
-	}
-	manyNulls += "]"
 	var err error
+
+	//  5119 repeats of 1 with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
+	longArraySlice := make([]int, 5119)
+	for i := 0; i < len(longArraySlice); i++ {
+		longArraySlice[i] = 1
+	}
+	longArray, err = json.Marshal(longArraySlice)
+	if err != nil {
+		panic(err)
+	}
+
+	// 1261 copies of "i":0 with i 0-1261, ',' separators and enclosing [] gives us a testJson of exactly 10KiB
+	longObjectMap := map[string]int{}
+	for i := 0; i <= 1261; i++ {
+		longObjectMap[strconv.Itoa(i)] = 0
+	}
+	longObject, err = json.Marshal(longObjectMap)
+	if err != nil {
+		panic(err)
+	}
+
+	//  3413 repeats of [] with , separators and enclosing [] gives us a testJson of exactly 10KiB
+	manyArraysSlice := make([][]interface{}, 3413)
+	for i := 0; i < len(manyArraysSlice); i++ {
+		manyArraysSlice[i] = []interface{}{}
+	}
+	manyArrays, err = json.Marshal(manyArraysSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	// 1463 copies of {"":0} with , separators and enclosing [] gives us a testJson of 10242 bytes (~1.0002KiB)
+	manyObjectsSlice := make([]map[string]int, 1463)
+	for i := 0; i < len(manyObjectsSlice); i++ {
+		manyObjectsSlice[i] = map[string]int{"": 1}
+	}
+	manyObjects, err = json.Marshal(manyObjectsSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	// 2048 repeats of true with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
+	manyTruesSlice := make([]bool, 2048)
+	for i := 0; i < len(manyTruesSlice); i++ {
+		manyTruesSlice[i] = true
+	}
+	manyTrues, err = json.Marshal(manyTruesSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	// 1707 repeats of false with , separators and enclosing [] gives us a testJson of 10243 bytes (~10.003KiB)
+	manyFalsesSlice := make([]bool, 1707)
+	manyFalses, err = json.Marshal(manyFalsesSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	// 2048 repeats of null with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
+	manyNullsSlice := make([]*interface{}, 2048)
+	manyNulls, err = json.Marshal(manyNullsSlice)
+	if err != nil {
+		panic(err)
+	}
+
 	packageLockAxios, err = os.ReadFile("testdata/package-lock-axios.json")
 	if err != nil {
 		panic(err)
 	}
 }
 
-// Benchmarks
+func BenchmarkIsJson(b *testing.B) {
+	implementations := []struct {
+		name           string
+		implementation func(json []byte) error
+	}{
+		{"IsJson", IsJson},
+		{"EncodingJson", func(maybeJson []byte) error {
+			var unmashalled interface{}
+			return json.Unmarshal(maybeJson, &unmashalled)
+		}},
+	}
+	for _, testCase := range testJsonCases {
+		for _, implementation := range implementations {
+			// TODO: setup encoding/json reference implementation which can handle really long numbers.
+			if implementation.name == "EncodingJson" && testCase.name == "LongNumber" {
+				continue
+			}
+			b.Run(
+				testCase.name+"/"+implementation.name,
+				func(b *testing.B) {
+					testJsonLen := len(*testCase.testJson)
+					b.ResetTimer()
+					b.StopTimer()
+					for n := 0; n < b.N; n++ {
+						testJsonCopy := make([]byte, testJsonLen)
+						copy(testJsonCopy, *testCase.testJson)
+						b.StartTimer()
+						err := implementation.implementation(testJsonCopy)
+						b.StopTimer()
+						if err != nil {
+							log.Println(err.Error())
+							b.FailNow()
+						}
+					}
 
-func BenchmarkIsJsonLongString10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, longString)
-}
+				},
+			)
 
-func BenchmarkIsJsonLongNumber10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, longNumber)
-}
-
-func BenchmarkIsJsonLongName10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, longName)
-}
-
-func BenchmarkIsJsonLongWhitespace10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, longWhitespace)
-}
-
-func BenchmarkIsJsonLongArray10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, []byte(longArray))
-}
-
-func BenchmarkIsJsonLongObject10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, []byte(longObject))
-}
-
-func BenchmarkIsJsonManyArrays10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, []byte(manyArrays))
-}
-
-func BenchmarkIsJsonManyObjects10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, []byte(manyObjects))
-}
-
-func BenchmarkIsJsonManyTrues10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, []byte(manyTrues))
-}
-
-func BenchmarkIsJsonManyFalses10KiB(b *testing.B) {
-
-	benchmarkImplementationIsJson(b, IsJson, []byte(manyFalses))
-}
-
-func BenchmarkIsJsonManyNulls10KiB(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, []byte(manyNulls))
-}
-
-func benchmarkImplementationIsJson(b *testing.B, implementation func(json []byte) error, testJson []byte) {
-	testJsonLen := len(testJson)
-	b.ResetTimer()
-	b.StopTimer()
-	for n := 0; n < b.N; n++ {
-		testJsonCopy := make([]byte, testJsonLen)
-		copy(testJsonCopy, testJson)
-		b.StartTimer()
-		err := implementation(testJsonCopy)
-		b.StopTimer()
-		if err != nil {
-			log.Println(err.Error())
-			b.FailNow()
 		}
 	}
 }
 
-func BenchmarkRedactAllValuesLongString10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, longString)
-}
-
-func BenchmarkRedactAllValuesLongNumber10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, longNumber)
-}
-
-func BenchmarkRedactAllValuesLongName10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, longName)
-}
-
-func BenchmarkRedactAllValuesLongWhitespace10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, longWhitespace)
-}
-
-func BenchmarkRedactAllValuesLongArray10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, []byte(longArray))
-}
-
-func BenchmarkRedactAllValuesLongObject10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, []byte(longObject))
-}
-
-func BenchmarkRedactAllValuesManyArrays10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, []byte(manyArrays))
-}
-
-func BenchmarkRedactAllValuesManyObjects10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, []byte(manyObjects))
-}
-
-func BenchmarkRedactAllValuesManyTrues10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, []byte(manyTrues))
-}
-
-func BenchmarkRedactAllValuesManyFalses10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, []byte(manyFalses))
-}
-
-func BenchmarkRedactAllValuesManyNulls10KiB(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, []byte(manyNulls))
-}
-
-func BenchmarkIsJsonSamplePackageLockAxios(b *testing.B) {
-	benchmarkImplementationIsJson(b, IsJson, packageLockAxios)
-}
-
-func BenchmarkIsJsonSamplePackageLockAxiosReferenceImplementation(b *testing.B) {
-	benchmarkImplementationIsJson(b, referenceImplementationIsJson, packageLockAxios)
-}
-
-func BenchmarkRedactAllValuesSamplePackageLockAxios(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, RedactAllValues, packageLockAxios)
-}
-
-func BenchmarkRedactAllValuesSamplePackageLockAxiosReferenceImplementation(b *testing.B) {
-	benchmarkImplementationRedactAllValues(b, referenceImplementationRedactAllValues, packageLockAxios)
-}
-
-func benchmarkImplementationRedactAllValues(b *testing.B, implementation func(json []byte) ([]byte, error), testJson []byte) {
-	testJsonLen := len(testJson)
-	b.ResetTimer()
-	b.StopTimer()
-	for n := 0; n < b.N; n++ {
-		testJsonCopy := make([]byte, testJsonLen)
-		copy(testJsonCopy, testJson)
-		b.StartTimer()
-		_, err := implementation(testJsonCopy)
-		b.StopTimer()
-		if err != nil {
-			log.Println(err.Error())
-			b.FailNow()
+func BenchmarkRedactAllValues(b *testing.B) {
+	implementations := []struct {
+		name           string
+		implementation func(json []byte) ([]byte, error)
+	}{
+		{"RedactAllValues", RedactAllValues},
+		{"EncodingJson", func(v []byte) ([]byte, error) {
+			var unmashalled interface{}
+			err := json.Unmarshal(v, &unmashalled)
+			if err != nil {
+				return nil, err
+			}
+			return json.Marshal(referenceImplementationRedactAllValuesPremarshalled(unmashalled))
+		}},
+	}
+	for _, testCase := range testJsonCases {
+		for _, implementation := range implementations {
+			// TODO: setup encoding/json reference implementation which can handle really long numbers.
+			if implementation.name == "EncodingJson" && testCase.name == "LongNumber" {
+				continue
+			}
+			b.Run(
+				testCase.name+"/"+implementation.name,
+				func(b *testing.B) {
+					testJsonLen := len(*testCase.testJson)
+					b.ResetTimer()
+					b.StopTimer()
+					for n := 0; n < b.N; n++ {
+						testJsonCopy := make([]byte, testJsonLen)
+						copy(testJsonCopy, *testCase.testJson)
+						b.StartTimer()
+						_, err := implementation.implementation(testJsonCopy)
+						b.StopTimer()
+						if err != nil {
+							log.Println(err.Error())
+							b.FailNow()
+						}
+					}
+				},
+			)
 		}
 	}
 }
@@ -497,22 +461,6 @@ func BenchmarkRedactAllValuesSamplePackageLockAxiosReferenceImplementationPremar
 			b.FailNow()
 		}
 	}
-}
-
-// Reference implementations
-
-func referenceImplementationIsJson(v []byte) error {
-	var unmashalled interface{}
-	return json.Unmarshal(v, &unmashalled)
-}
-
-func referenceImplementationRedactAllValues(v []byte) ([]byte, error) {
-	var unmashalled interface{}
-	err := json.Unmarshal(v, &unmashalled)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(referenceImplementationRedactAllValuesPremarshalled(unmashalled))
 }
 
 func referenceImplementationRedactAllValuesPremarshalled(to_redact interface{}) interface{} {
