@@ -1,4 +1,4 @@
-# jsonbytes
+# jsonbytes [![Go Reference](https://pkg.go.dev/badge/github.com/theteacat/jsonbytes.svg)](https://pkg.go.dev/github.com/theteacat/jsonbytes)
 
 Package jsonbytes provides utilities for operating on JSON values expressed as `[]byte`. There are various operations you may want to perform on a JSON value that may be a bit quicker or more memory efficient to perform without unmarshalling it.
 
