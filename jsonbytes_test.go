@@ -362,7 +362,7 @@ func BenchmarkIsJson(b *testing.B) {
 		name           string
 		implementation func(json []byte) error
 	}{
-		{"IsJson", IsJson},
+		{"JsonBytes", IsJson},
 		{"EncodingJson", func(maybeJson []byte) error {
 			var unmashalled interface{}
 			return json.Unmarshal(maybeJson, &unmashalled)
@@ -404,7 +404,7 @@ func BenchmarkRedactAllValues(b *testing.B) {
 		name           string
 		implementation func(json []byte) ([]byte, error)
 	}{
-		{"RedactAllValues", RedactAllValues},
+		{"JsonBytes", RedactAllValues},
 		{"EncodingJson", func(v []byte) ([]byte, error) {
 			var unmashalled interface{}
 			err := json.Unmarshal(v, &unmashalled)
@@ -443,7 +443,7 @@ func BenchmarkRedactAllValues(b *testing.B) {
 	}
 }
 
-func BenchmarkRedactAllValuesSamplePackageLockAxiosReferenceImplementationPremarshalled(b *testing.B) {
+func BenchmarkRedactAllValuesPackageLockAxiosEncodingJsonPremarshalled(b *testing.B) {
 	b.ResetTimer()
 	b.StopTimer()
 	for n := 0; n < b.N; n++ {
