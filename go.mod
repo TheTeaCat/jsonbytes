@@ -1,4 +1,4 @@
-module jsonbytes
+module github.com/theteacat/jsonbytes
 
 go 1.23.5
 
