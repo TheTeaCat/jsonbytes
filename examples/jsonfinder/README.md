@@ -9,7 +9,7 @@ If anyone ever finds this genuinely useful, please let me know. I'd be amazed!
 ## Quickstart
 
 ```bash
-git clone git@github.com/theteacat/jsonbytes
+git clone git@github.com:TheTeaCat/jsonbytes.git
 cd jsonbytes/examples/jsonfinder
 go build
 ./jsonfinder -help

@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"io/fs"
-	"jsonbytes"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/theteacat/jsonbytes"
 )
 
 var dirFlag = flag.String("dir", ".", "the absolute path of the directory to search for JSON files")
