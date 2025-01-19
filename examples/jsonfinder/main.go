@@ -15,6 +15,7 @@ var skipIsJson = flag.Bool("skipisjson", false, "disables logging that files are
 
 func main() {
 	flag.Parse()
+	foundInvalidJson := false
 	err := filepath.WalkDir(*dirFlag, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			log.Printf("😭 Could not walk %s, err: %s\n", path, err.Error())
@@ -28,6 +29,7 @@ func main() {
 		}
 		err = jsonbytes.IsJson(fileContent)
 		if err != nil && *logNotJson {
+			foundInvalidJson = true
 			log.Printf("❌ %s is not JSON.\n", path)
 		} else if err == nil && !*skipIsJson {
 			log.Printf("✅ %s is JSON!\n", path)
@@ -36,5 +38,10 @@ func main() {
 	})
 	if err != nil {
 		log.Fatal(err)
+	}
+	if foundInvalidJson {
+		log.Println("Some of the files checked weren't valid JSON! 😭")
+	} else {
+		log.Println("Every file checked was valid JSON! 🥳")
 	}
 }

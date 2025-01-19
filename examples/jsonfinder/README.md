@@ -24,7 +24,8 @@ go build
 ```
 
 ```
-✅ ../../testdata/package-lock-axios.json is JSON!
+2025/01/19 00:36:44 ✅ ../../testdata/package-lock-axios.json is JSON!
+2025/01/19 00:36:44 Every file checked was valid JSON! 🥳
 ```
 
 
