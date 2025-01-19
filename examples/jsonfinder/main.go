@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io/fs"
 	"jsonbytes"
 	"log"
@@ -29,9 +28,9 @@ func main() {
 		}
 		err = jsonbytes.IsJson(fileContent)
 		if err != nil && *logNotJson {
-			fmt.Printf("❌ %s is not JSON.\n", path)
+			log.Printf("❌ %s is not JSON.\n", path)
 		} else if err == nil && !*skipIsJson {
-			fmt.Printf("✅ %s is JSON!\n", path)
+			log.Printf("✅ %s is JSON!\n", path)
 		}
 		return nil
 	})
