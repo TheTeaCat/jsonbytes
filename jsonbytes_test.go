@@ -287,8 +287,8 @@ var testJsonCases []testJsonCase = []testJsonCase{
 func init() {
 	var err error
 
-	//  5119 repeats of 1 with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
-	longArraySlice := make([]int, 5119)
+	//  5120 repeats of 1 with , separators and enclosing [] gives us a testJson of 10241 bytes (~1.0001KiB)
+	longArraySlice := make([]int, 5120)
 	for i := 0; i < len(longArraySlice); i++ {
 		longArraySlice[i] = 1
 	}
@@ -299,7 +299,7 @@ func init() {
 
 	// 1261 copies of "i":0 with i 0-1261, ',' separators and enclosing [] gives us a testJson of exactly 10KiB
 	longObjectMap := map[string]int{}
-	for i := 0; i <= 1261; i++ {
+	for i := 0; i < 1261; i++ {
 		longObjectMap[strconv.Itoa(i)] = 0
 	}
 	longObject, err = json.Marshal(longObjectMap)
