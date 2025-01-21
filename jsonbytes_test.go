@@ -276,7 +276,7 @@ var testJsonCases []testJsonCase = []testJsonCase{
 	{"LongNumber", &longNumber},
 	{"LongName", &longName},
 	{"LongWhitespace", &longWhitespace},
-	{"longArray", &longArray},
+	{"LongArray", &longArray},
 	{"LongObject", &longObject},
 	{"ManyArrays", &manyArrays},
 	{"ManyObjects", &manyObjects},
