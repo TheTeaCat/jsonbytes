@@ -1,6 +1,9 @@
 # jsonbytes [![Go Reference](https://pkg.go.dev/badge/github.com/theteacat/jsonbytes.svg)](https://pkg.go.dev/github.com/theteacat/jsonbytes)
 
-Package jsonbytes provides utilities for operating on JSON values expressed as `[]byte`. There are various operations you may want to perform on a JSON value that may be a bit quicker or more memory efficient to perform without unmarshalling it.
+Package jsonbytes provides utilities for operating on JSON values expressed as `[]byte`. There are various operations you may want to perform on a JSON value that may be a bit quicker or more memory efficient to perform without unmarshalling it, such as:
+
+- [`IsJson(maybeJson []byte) error`](https://pkg.go.dev/github.com/theteacat/jsonbytes#IsJson): returns `nil` if `maybeJson` is valid JSON, else an error detailing why.
+- [`RedactAllValues(inputJson []byte) ([]byte, error)`](https://pkg.go.dev/github.com/theteacat/jsonbytes#RedactAllValues): returns a new `[]byte` equivalent to `inputJson`, but with all the strings replaced with `""`, numbers replaced with `0` and booleans replaced with `true`; this may be useful if you want to log API request and response payloads that contain sensitive values.
 
 Note that this package is niche; if the JSON you want to operate on has to be unmarshalled at some stage anyway, it will probably be more efficient to operate on it after it has been unmarshalled.
 
