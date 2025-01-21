@@ -3,7 +3,9 @@ package jsonbytes
 import "errors"
 
 // IsJson takes a single argument maybeJson []byte and returns nil if maybeJson is a valid JSON value, else an error
-// detailing why it is not a valid JSON value.
+// detailing why it is not a valid JSON value. Note that IsJson does not guarantee that the names of an object are all
+// unique, as rfc7159 and rfc4627 stipulate "The names within an object SHOULD be unique"; there may exist valid reasons
+// in particular circumstances to ignore this.
 func IsJson(maybeJson []byte) error {
 	jsonValidator, err := newJsonValidator(maybeJson)
 	if err != nil {
