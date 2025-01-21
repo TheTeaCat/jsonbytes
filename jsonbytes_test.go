@@ -262,6 +262,8 @@ var manyObjects []byte
 var manyTrues []byte
 var manyFalses []byte
 var manyNulls []byte
+var deeplyNestedArray []byte
+var deeplyNestedObject []byte
 var packageLockAxios []byte
 
 type testJsonCase struct {
@@ -281,6 +283,8 @@ var testJsonCases []testJsonCase = []testJsonCase{
 	{"ManyTrues", &manyTrues},
 	{"ManyFalses", &manyFalses},
 	{"ManyNulls", &manyNulls},
+	{"DeeplyNestedArray", &deeplyNestedArray},
+	{"DeeplyNestedObject", &deeplyNestedObject},
 	{"PackageLockAxios", &packageLockAxios},
 }
 
@@ -350,6 +354,20 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	deeplyNestedArray = make([]byte, 10240)
+	for i := 0; i < len(deeplyNestedArray)/2; i++ {
+		deeplyNestedArray[i] = '['
+		deeplyNestedArray[i+len(deeplyNestedArray)/2] = ']'
+	}
+
+	deeplyNestedObject = make([]byte, 10242)
+	deeplyNestedObject[0] = '{'
+	for i := 0; i < len(deeplyNestedObject)/5; i++ {
+		copy(deeplyNestedObject[i*4+1:i*4+5], []byte("\"\":{"))
+		deeplyNestedObject[len(deeplyNestedObject)-2-i] = '}'
+	}
+	deeplyNestedObject[len(deeplyNestedObject)-1] = '}'
 
 	packageLockAxios, err = os.ReadFile("testdata/package-lock-axios.json")
 	if err != nil {
